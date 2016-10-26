@@ -1,0 +1,39 @@
+#!/usr/bin/python3
+# -*- coding:utf-8 -*-
+import urllib.request
+import re
+
+
+def open_url(url):
+    req = urllib.request.Request(url)
+    req.add_header('User-Agent', ' Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6)\
+    AppleWebKit/537.36 (KHTML, like Gecko)Chrome/51.0.2704.103 Safari/537.36')
+    response = urllib.request.urlopen(req)
+    html = response.read().decode('utf-8')
+    return html
+
+
+def get_ip(url='http://www.kuaidaili.com/free/inha/'):
+    q = r'(?:(?:[01]?\d?\d|2[0-4]\d|25[0-5])\.){3}(?:[01]?\d?\d|2[0-4]\d|25[0-5])'  # 用正则表达式匹配IP地址
+    p = r'(?<="PORT">)\d+'  # 用正则表达式匹配端口
+    proxy_ip = []
+    while len(proxy_ip) < 20:
+        count = 1
+        num = 0
+        html = open_url(url + str(count))
+        count += 1
+        ips = re.findall(q, html)
+        ports = re.findall(p, html)
+        for each_ip in ips:
+            proxy_ip.append(each_ip + ':' + ports[num])
+            num += 1
+        for i in proxy_ip:
+            print(i)
+    # return proxy_ip
+
+
+if __name__ == '__main__':
+    get_ip()
+
+
+
